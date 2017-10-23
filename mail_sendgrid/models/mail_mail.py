@@ -187,15 +187,15 @@ class OdooMail(models.Model):
         subject = self.subject and self.subject.encode(
             "utf_8") or "(No subject)"
         personalization.subject = subject
-        addresses = list()
+        addresses = set()
         if not test_address:
-            if self.email_to and self.email_to not in addresses:
-                personalization.add_to(Email(self.email_to))
-                addresses.append(self.email_to)
+            if self.email_to:
+                addresses = set(self.email_to.split(','))
+                for address in addresses:
+                    personalization.add_to(Email(address))
             for recipient in self.recipient_ids:
                 if recipient.email not in addresses:
                     personalization.add_to(Email(recipient.email))
-                    addresses.append(recipient.email)
             if self.email_cc and self.email_cc not in addresses:
                 personalization.add_cc(Email(self.email_cc))
         else:
