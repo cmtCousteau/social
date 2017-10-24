@@ -196,6 +196,7 @@ class OdooMail(models.Model):
             for recipient in self.recipient_ids:
                 if recipient.email not in addresses:
                     personalization.add_to(Email(recipient.email))
+                    addresses.add(recipient.email)
             if self.email_cc and self.email_cc not in addresses:
                 personalization.add_cc(Email(self.email_cc))
         else:
